@@ -35,12 +35,30 @@ class TransferPage
     /** Errors reported back. Beyond this the list stops being read and starts being scrolled. */
     private const MAX_ERRORS = 20;
 
+    /**
+     * The column reference shown under the paste box.
+     *
+     * On the screen rather than in a manual, because the moment an operator needs it is the
+     * moment they are looking at a spreadsheet wondering which columns to keep. Written as
+     * prose rather than a table: a `display` field renders one value, and a list of nine
+     * columns nobody reads beats a sentence that says which two actually matter.
+     */
+    private const COLUMN_HELP =
+        'Only "from" and "to" have to be filled in. A row missing either is skipped and told to '
+        . 'you by line number. Everything else falls back to a sensible default: the match becomes '
+        . 'an exact one, the code becomes 301, priority becomes 0, status becomes active, and both '
+        . 'dates stay empty, which means the rule always applies. The header row is optional — '
+        . 'leave it off and the columns are read in the order shown in the box above. A rule you '
+        . 'already have is updated rather than added a second time, so if something goes wrong you '
+        . 'can correct your file and paste the whole thing again.';
+
     /** @return array<string,mixed> */
     public function data(): array
     {
         return [
-            'export_csv' => $this->export(),
-            'import_csv' => '',
+            'export_csv'  => $this->export(),
+            'import_csv'  => '',
+            'import_help' => self::COLUMN_HELP,
             'rules_total' => RedirectRule::query()->count(),
         ];
     }
