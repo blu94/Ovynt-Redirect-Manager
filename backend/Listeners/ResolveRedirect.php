@@ -85,8 +85,8 @@ class ResolveRedirect
     /**
      * Write down a path that resolved to nothing.
      *
-     * Filtered at write time rather than read time. A vulnerability scanner walking a list of
-     * WordPress admin paths would otherwise dominate the Broken Links screen, and the handful
+     * Filtered at write time rather than read time. A vulnerability scanner walking its list of
+     * admin paths and dotfiles would otherwise dominate the Broken Links screen, and the handful
      * of real content misses an operator can act on would be buried under it — so the rows are
      * not written at all rather than hidden later.
      */

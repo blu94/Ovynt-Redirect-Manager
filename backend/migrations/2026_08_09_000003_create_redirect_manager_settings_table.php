@@ -27,10 +27,10 @@ return new class extends Migration
             // migration and does not want the write on every bot probe can stop it.
             $table->boolean('log_404')->default(true);
 
-            // Paths never recorded, as globs: "wp-admin/*", "*.php", ".env".
+            // Paths never recorded, as globs: ".git/*", "*.sql", ".env".
             //
             // Without this the Broken Links list is dominated by vulnerability scanners
-            // probing for WordPress and dotfiles, and the handful of real content misses that
+            // probing for software this site does not serve, and the handful of real misses that
             // an operator can actually fix are buried. Filtering at write time rather than at
             // read time also keeps the rows from being written in the first place.
             $table->json('ignore_patterns')->nullable();

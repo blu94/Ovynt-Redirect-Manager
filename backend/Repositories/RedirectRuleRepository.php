@@ -62,7 +62,7 @@ class RedirectRuleRepository
 
         $this->afterWrite($rule);
 
-        return $this->present($rule);
+        return $rule;
     }
 
     /**
@@ -116,7 +116,7 @@ class RedirectRuleRepository
      */
     public function find($id)
     {
-        return $this->present(RedirectRule::find($id));
+        return RedirectRule::find($id);
     }
 
     public function update($id, array $data)
@@ -128,24 +128,6 @@ class RedirectRuleRepository
         $rule->update($data);
 
         $this->afterWrite($rule);
-
-        return $this->present($rule);
-    }
-
-    /**
-     * Show the home page as `/` rather than as nothing.
-     *
-     * **Every hand-back, not just the load.** Fixing only `find()` left the bug half alive: the
-     * form loaded correctly, then the save returned the freshly-written record — empty
-     * destination and all — and the field went blank again the moment it succeeded. The form
-     * binds to whatever the write returns, so a read-side fix that skips the write path is a
-     * fix the operator watches undo itself.
-     */
-    private function present(?RedirectRule $rule): ?RedirectRule
-    {
-        if ($rule !== null && (string) $rule->to_path === '') {
-            $rule->setAttribute('to_path', '/');
-        }
 
         return $rule;
     }
@@ -187,7 +169,7 @@ class RedirectRuleRepository
         $query     = (string) ($data['query_match'] ?? $existing?->query_match ?? '');
 
         // An empty path is allowed — it is the site's front page, which is what an old
-        // WordPress permalink like `/?p=123` needs. An empty path *and* an empty query is not:
+        // permalink like `/?p=123` needs. An empty path *and* an empty query is not:
         // that rule says "match the front page however it is asked for" and would send every
         // visitor arriving at the home page somewhere else.
         //
@@ -218,8 +200,8 @@ class RedirectRuleRepository
      *
      * **Not a `unique:` validation rule**, because uniqueness here is the three columns the
      * table's index covers — kind, path and query — and `unique:table,from_path` would reject
-     * the second half of the pair a WordPress migration needs: `/?p=123` and `/?p=124` are
-     * two different articles legitimately sharing one path.
+     * the second half of the pair such a migration needs: `/?p=123` and `/?p=124` are two
+     * different articles legitimately sharing one path.
      *
      * Without this the duplicate reaches the database, and the operator gets MySQL's integrity
      * constraint message with the index name in it instead of a sentence about their rule.

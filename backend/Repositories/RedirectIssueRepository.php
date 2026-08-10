@@ -227,6 +227,6 @@ class RedirectIssueRepository
 
         return ['message' => $deleted === 0
             ? 'Nothing was old enough to remove.'
-            : "Removed {$deleted} resolved " . ($deleted === 1 ? 'entry' : 'entries') . '.'];
+            : "Removed {$deleted} " . ($deleted === 1 ? 'entry' : 'entries') . ' you had dealt with.'];
     }
 }

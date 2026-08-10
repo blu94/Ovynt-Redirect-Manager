@@ -162,8 +162,8 @@ class RedirectMatcher
     private function match(string $path, string $queryString): ?array
     {
         // **An empty path is matchable, not skipped.** It is the site root, and a rule for it is
-        // the WordPress case this package advertises query matching for: `/?p=123` is an old
-        // permalink for a post, and its path normalises to nothing at all.
+        // the case this package advertises query matching for: `/?p=123` is an old permalink for
+        // a post, and its path normalises to nothing at all.
         //
         // The guard that used to sit here returned null before any rule was consulted, so no
         // root rule could ever fire whatever its query said. It was never load-bearing — the
@@ -230,8 +230,8 @@ class RedirectMatcher
      * **Subset, not equality.** A rule asking for `p=123` matches a request for
      * `?p=123&utm_source=newsletter`, because the parameters that identify the old page and
      * the parameters a campaign bolted on are different things and only the first is the
-     * operator's business. Requiring the whole string to match would mean a WordPress rule
-     * worked from a bookmark and failed from every link anybody shared.
+     * operator's business. Requiring the whole string to match would mean such a rule worked
+     * from a bookmark and failed from every link anybody shared.
      *
      * An empty requirement matches anything, which is how a redirect normally behaves.
      */

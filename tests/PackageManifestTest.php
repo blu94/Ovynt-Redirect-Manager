@@ -25,9 +25,10 @@ class PackageManifestTest extends TestCase
     /**
      * A root rule needs a core that asks about the root.
      *
-     * An empty `from_path` plus a query is how an old WordPress permalink like `/?p=123` is
-     * caught, and it only works on a build whose `ThemeController` dispatches `PathNotResolved`
-     * for `/` when the request carries a query string. That build is 1.3.0.
+     * An empty `from_path` plus a query is how an old permalink like `/?p=123` is caught — one
+     * naming the page in the query rather than the path — and it only works on a build whose
+     * `ThemeController` dispatches `PathNotResolved` for `/` when the request carries a query
+     * string. That build is 1.3.0.
      *
      * While the constraint said `>=1.2.0` the package installed happily onto a build with no
      * root dispatch, where the rule saves, appears in the list, and silently never fires —

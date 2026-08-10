@@ -186,7 +186,7 @@ class RedirectMatcherTest extends TestCase
     }
     /**
      * The site root is a matchable path, and this is the case the package advertises query
-     * matching for: `/?p=123` is an old WordPress permalink for a post, not the front page.
+     * matching for: `/?p=123` is an old permalink for a post, not the front page.
      *
      * Its path normalises to nothing at all, so a rule for it has an empty `from_path` — which
      * a guard in `match()` used to reject before any rule was consulted. Nothing about the

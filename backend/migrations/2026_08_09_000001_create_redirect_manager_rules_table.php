@@ -39,8 +39,8 @@ return new class extends Migration
             // Empty means "match whatever the query string is", which is how a redirect
             // normally behaves — a moved page is moved for every campaign link pointing at
             // it. A value means the rule only fires for that query, which is what a
-            // WordPress migration needs: /?p=123 and /?p=124 are two different articles
-            // sharing one path.
+            // a migration needs when the old site named a page in the query rather than the
+            // path: /?p=123 and /?p=124 are two different articles sharing one path.
             //
             // NOT NULL with an empty-string default, deliberately: MySQL treats NULLs as
             // distinct in a unique index, so a nullable column here would let the same rule

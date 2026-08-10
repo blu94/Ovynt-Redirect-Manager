@@ -54,7 +54,10 @@ class HomePageDestinationTest extends TestCase
     {
         $rule = $this->homeRule();
 
-        $this->assertSame('', $rule->fresh()->to_path);
+        // `getRawOriginal` deliberately, not `to_path` — the column is what the matcher looks
+        // up, and the accessor is only how it is shown. Asserting the presented value here
+        // would leave the storage side untested.
+        $this->assertSame('', $rule->fresh()->getRawOriginal('to_path'));
         $this->assertSame(url('/'), $rule->fresh()->target());
     }
 
@@ -84,23 +87,38 @@ class HomePageDestinationTest extends TestCase
         $this->assertSame('/', $rule->to_path, 'create() must hand it back too.');
 
         $this->assertSame('/', $this->repo()->update($rule->id, ['code' => 302])->to_path);
-        $this->assertSame('', RedirectRule::find($rule->id)->to_path, 'and still store the empty form.');
+        $this->assertSame('', RedirectRule::find($rule->id)->getRawOriginal('to_path'), 'and still store the empty form.');
     }
 
     /**
-     * Presented at the read boundary, never written. If this leaked into storage the matcher
-     * would build `url('//')`, because it reads the column directly rather than through the
-     * repository.
+     * Shown, never written. The accessor must not leak into the column, or the same rule saved
+     * twice would drift between `''` and `/` depending on which read fed the write.
      */
     #[Test]
     public function presenting_the_slash_does_not_change_what_is_stored(): void
     {
         $id = $this->homeRule()->id;
 
-        $this->repo()->find($id);
+        // A full round trip through the form's own path: read it, save it back untouched.
+        $this->repo()->update($id, ['code' => 302]);
 
-        $this->assertSame('', RedirectRule::find($id)->to_path);
+        $this->assertSame('', RedirectRule::find($id)->getRawOriginal('to_path'));
         $this->assertSame(url('/'), RedirectRule::find($id)->target());
+    }
+
+    /**
+     * The list builds from `baseIndexQuery`, which hands back models rather than raw rows, so
+     * the accessor reaches the table too. It previously rendered a dash — a rule that looked
+     * like it had no destination at all, next to a form that said `/`.
+     */
+    #[Test]
+    public function the_list_shows_the_destination_too(): void
+    {
+        $this->homeRule();
+
+        $listed = $this->repo()->baseIndexQuery([])->get();
+
+        $this->assertSame('/', $listed->firstWhere('from_path', 'old-page')->to_path);
     }
 
     /**

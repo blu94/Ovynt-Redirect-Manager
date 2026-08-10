@@ -69,7 +69,7 @@
               "key": "pattern",
               "type": "text",
               "label": "Address pattern",
-              "placeholder": "wp-admin/*"
+              "placeholder": ".git/*"
             }
           ]
         }

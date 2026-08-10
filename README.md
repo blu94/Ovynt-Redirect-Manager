@@ -20,9 +20,10 @@ cycle.
 | **Prefix** | a path and everything under it | `blog` → `news/$1` moves every article at once |
 | **Pattern** | a regular expression, with captures | `blog/(\d+)/(.+)` → `news/$2` |
 
-Every rule can additionally require a **query string** — `p=123`, which is what a WordPress
-site needs when its old links are `/?p=123` rather than a readable slug. The requirement is a
-subset test, so a rule for `p=123` still matches `?p=123&utm_source=newsletter`.
+Every rule can additionally require a **query string** — `p=123`, which is what a migration
+needs when the old links named a page in the query, `/?p=123`, rather than with a readable
+slug. The requirement is a subset test, so a rule for `p=123` still matches
+`?p=123&utm_source=newsletter`.
 
 **Leave the path empty to match your front page.** `/?p=123` has no path at all once the
 leading slash is stripped, so the rule that catches it is an empty `From path` plus a query of

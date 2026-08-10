@@ -12,23 +12,11 @@
 
     `$slotData` carries whatever the calling page knew. `path` is the one thing needed here; a
     theme that passes nothing still renders safely, it just has nothing to suggest.
+
+    The settings read, the scoring and the degrade-to-nothing on failure all live in
+    `Backend\Support\NotFoundSuggestions` — presentation only below.
 --}}
-@php
-    use Plugin\RedirectManager\Backend\Models\RedirectSetting;
-    use Plugin\RedirectManager\Backend\Services\PathSuggester;
-
-    $suggestions = [];
-
-    try {
-        if (RedirectSetting::current()->storefront_suggestions) {
-            $suggestions = app(PathSuggester::class)->suggest($slotData['path'] ?? request()->path(), 3);
-        }
-    } catch (\Throwable $e) {
-        // A 404 page that fails to render is a 500, and a visitor who mistyped a URL should
-        // never see one. Nothing to suggest is the correct outcome of anything going wrong.
-        report($e);
-    }
-@endphp
+@php($suggestions = \Plugin\RedirectManager\Backend\Support\NotFoundSuggestions::for($slotData['path'] ?? null))
 
 @if (! empty($suggestions))
     <div class="redirect-manager-suggestions">

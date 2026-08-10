@@ -113,7 +113,8 @@ class RedirectRuleLifecycleTest extends TestCase
     #[Test]
     public function the_same_path_may_carry_two_rules_with_different_queries(): void
     {
-        // The WordPress case the three-column index exists for.
+        // The case the three-column index exists for: two pages sharing one path, told apart
+        // by the query.
         $this->repo()->create($this->attributes(['from_path' => '', 'query_match' => 'p=123', 'to_path' => 'a']));
         $this->repo()->create($this->attributes(['from_path' => '', 'query_match' => 'p=124', 'to_path' => 'b']));
 

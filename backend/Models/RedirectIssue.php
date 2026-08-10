@@ -81,7 +81,16 @@ class RedirectIssue extends Model
      */
     public function getStateAttribute(): string
     {
-        return $this->resolved ? 'resolved' : 'open';
+        // "Dealt with", not "resolved", because that is the word on the button that sets it and
+        // in the filter that finds it again. The two disagreed: an operator pressed **Dealt
+        // with** and the row then reported **resolved**, with Prune talking about resolved
+        // entries — three names for one thing on one screen.
+        //
+        // Only the shown word changes. The column, the filter key and the API value stay
+        // `resolved`; "resolve" is also what this plugin calls a path finding a page
+        // (`PathNotResolved`, `RedirectMatcher::resolve()`), which is why the operator-facing
+        // half reads better as the plainer phrase.
+        return $this->resolved ? 'dealt with' : 'open';
     }
 
     /** The type as something worth reading in a table cell. */

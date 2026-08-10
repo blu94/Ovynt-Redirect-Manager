@@ -164,6 +164,30 @@ class RedirectRule extends Model
         return self::isAbsoluteUrl($this->to_path);
     }
 
+    /**
+     * The destination, with the front page shown as `/` rather than as nothing.
+     *
+     * A destination is stored normalised, so `/` trims to `''` — which is what the matcher
+     * wants, since an empty target builds `url('/')`. The cost was that the home page became
+     * the *absence* of a value, and every "is this filled in?" check downstream read it as
+     * missing: the form came back blank and refused the next save because the field is
+     * required, the list showed a dash, the CSV exported an empty `to` that its own import then
+     * skipped, and the duplicate-rule error read `sending it to ""`.
+     *
+     * One accessor answers all of them, because every screen reads the attribute and every
+     * consumer of the value normalises before using it — `resolvedTo()` and `toUrl()` both end
+     * in `normaliseTarget()`, so a `/` arriving there is trimmed straight back to `''` and
+     * still builds the site root. Sorting and searching are unaffected: they run against the
+     * real column in SQL and never see this.
+     *
+     * Reads `$value` — the raw attribute Eloquent hands in — rather than `$this->to_path`,
+     * which would call this method again.
+     */
+    public function getToPathAttribute(?string $value): string
+    {
+        return (string) $value === '' ? '/' : (string) $value;
+    }
+
     /** Rules an operator has switched on. Says nothing about their window. */
     public function scopeActive(Builder $query): Builder
     {

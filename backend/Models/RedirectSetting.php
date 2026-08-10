@@ -76,11 +76,11 @@ class RedirectSetting extends Model
      * Whether a path should be left unrecorded.
      *
      * Globs rather than regular expressions: an operator writing an ignore list is thinking
-     * "anything under wp-admin", and `fnmatch` says that as `wp-admin/*` without a chance of
-     * writing a pattern that backtracks catastrophically on the 404 path.
+     * "anything under .git", and `fnmatch` says that as `.git/*` without a chance of writing a
+     * pattern that backtracks catastrophically on the 404 path.
      *
      * `FNM_CASEFOLD` because these are noise filters, not routing — someone excluding
-     * `wp-admin/*` means it whichever case the scanner used.
+     * `.git/*` means it whichever case the scanner used.
      */
     public function ignores(string $path): bool
     {

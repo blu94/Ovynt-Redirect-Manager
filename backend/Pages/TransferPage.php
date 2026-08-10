@@ -90,11 +90,10 @@ class TransferPage
                     // an empty `to` — so exporting it verbatim produced a file whose own import
                     // silently skipped that row. Written as `/`, which normalises straight back
                     // to empty on the way in.
-                    // The home page is stored as an empty destination, and `validate()` refuses
-                    // an empty `to` — so exporting it verbatim produced a file whose own import
-                    // silently skipped that row. Written as `/`, which normalises straight back
-                    // to empty on the way in.
-                    (string) $rule->to_path === '' ? '/' : $rule->to_path,
+                    // Reads `/` for the front page, via the model's accessor — an empty `to` is
+                    // refused by `validate()`, so exporting it verbatim produced a file whose
+                    // own import silently skipped that row.
+                    $rule->to_path,
                     $rule->code,
                     $rule->priority,
                     $rule->status,
@@ -302,9 +301,9 @@ class TransferPage
         }
 
         // An empty path is allowed when a query is named — that pair is the site's front page
-        // asked for a particular way, which is what an exported WordPress permalink such as
-        // `/?p=123` becomes. Empty on both is refused for the same reason the form is: it would
-        // match the home page however it was reached.
+        // asked for a particular way, which is what an exported permalink such as `/?p=123`
+        // becomes. Empty on both is refused for the same reason the form is: it would match the
+        // home page however it was reached.
         if ($values['from_path'] === '' && $values['query_match'] === '') {
             return 'a rule needs a path, or a query to match on when the path is your front page.';
         }

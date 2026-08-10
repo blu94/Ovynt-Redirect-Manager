@@ -20,7 +20,7 @@
         "api": "/admin/modules/redirect-issues/page/prune",
         "params": {
           "confirm": true,
-          "confirmText": "Remove resolved entries older than the retention period set in Settings? Open entries are never removed."
+          "confirmText": "Remove entries you have dealt with, older than the retention period set in Settings? Open entries are never removed."
         }
       }
     ]
@@ -71,7 +71,7 @@
       "sortable": false,
       "align": "center",
       "type": "status",
-      "colors": { "resolved": "success", "open": "warning" }
+      "colors": { "dealt with": "success", "open": "warning" }
     }
   ],
   "actions": {
