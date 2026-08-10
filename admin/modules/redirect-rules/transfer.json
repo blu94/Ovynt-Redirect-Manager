@@ -1,0 +1,46 @@
+{
+  "ui": { "type": "section", "icon": "tabler-file-spreadsheet", "class": "pa-5" },
+  "name": "Import & export",
+  "subtitle": "A migration usually arrives as a file somebody exported from the site being replaced. Paste it here rather than retyping it.",
+  "elements": [
+    {
+      "ui": { "type": "row", "dense": false },
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": 12 },
+          "key": "import_csv",
+          "type": "textarea",
+          "label": "Paste CSV to import",
+          "placeholder": "match_type,from_path,query_match,to_path,code,priority,status,starts_at,ends_at\nexact,old-page,,new-page,301,0,active,,",
+          "rows": 12,
+          "hint": "A header row is detected if present; from and to are the only required columns and everything else falls back to a sensible default. A rule that already exists is updated rather than duplicated, so a corrected file can simply be pasted again.",
+          "rules": ["nullable", "string"]
+        }
+      ]
+    },
+    {
+      "ui": { "type": "row", "dense": true },
+      "elements": [
+        {
+          "ui": { "type": "button", "color": "primary", "icon": "tabler-upload" },
+          "action": "save",
+          "label": "Import rules"
+        }
+      ]
+    },
+    {
+      "ui": { "type": "row", "dense": false },
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": 12 },
+          "key": "export_csv",
+          "type": "textarea",
+          "label": "Every rule, as CSV",
+          "rows": 12,
+          "readonly": true,
+          "hint": "Select all and copy. A plugin cannot stream a file download — every request it serves goes through Ovynt's generic module endpoints, which always answer with JSON — so this is a text box rather than a button."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Broken Links",
+  "type": "redirect-issues",
+  "resource": "redirect_manager",
+  "routeBase": "module/redirect-issues",
+  "order": 12,
+  "icon": "tabler-link-off",
+  "api": "/admin/modules/redirect-issues",
+  "readonly": true,
+  "table": { "$ref": "index.json" },
+  "view": { "$ref": "view.json" }
+}

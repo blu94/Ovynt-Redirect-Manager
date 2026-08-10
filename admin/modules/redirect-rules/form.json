@@ -1,0 +1,151 @@
+{
+  "elements": [
+    {
+      "ui": { "type": "section", "cols": 12, "icon": "tabler-route" },
+      "name": "Redirect",
+      "subtitle": "Send an old URL to its new home. Matched after the shop has failed to find a page, so a working page is never affected.",
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 4 } },
+          "key": "match_type",
+          "type": "select",
+          "label": "Match",
+          "placeholder": "Select how to match",
+          "default": "exact",
+          "hint": "Exact is right for a page that was renamed.",
+          "options": {
+            "items": [
+              { "title": "Exact path", "value": "exact" },
+              { "title": "Path and everything under it", "value": "prefix" },
+              { "title": "Pattern", "value": "regex" }
+            ]
+          },
+          "rules": ["required", "in:exact,prefix,regex"]
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 8 } },
+          "key": "from_path",
+          "type": "text",
+          "label": "From path",
+          "placeholder": "old-page, or blog for everything under it",
+          "hint": "The path only, without the domain. Leading and trailing slashes are ignored. For a pattern, write it without slashes around it — blog/(\\d+)/(.+)",
+          "rules": ["required", "string", "max:255"]
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 4 } },
+          "key": "query_match",
+          "type": "text",
+          "label": "Only when the query is",
+          "placeholder": "p=123",
+          "hint": "Leave empty to match whatever follows the ?. Set it for old WordPress links like /?p=123 — extra parameters such as tracking tags are ignored.",
+          "rules": ["nullable", "string", "max:255"]
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 8 } },
+          "key": "to_path",
+          "type": "text",
+          "label": "To path or URL",
+          "placeholder": "new-page or https://example.com/elsewhere",
+          "hint": "An internal path, or a full https:// URL. For a prefix or pattern rule, $1 carries what was matched.",
+          "rules": ["required", "string", "max:255"]
+        }
+      ]
+    },
+    {
+      "ui": { "type": "section", "cols": 12, "icon": "tabler-calendar-clock" },
+      "name": "When it applies",
+      "subtitle": "Leave the dates empty for a permanent move. Set them for a campaign URL that should stop working on its own.",
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 4 } },
+          "key": "starts_at",
+          "type": "datetime",
+          "label": "Starts",
+          "placeholder": "Immediately",
+          "rules": ["nullable", "date"]
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 4 } },
+          "key": "ends_at",
+          "type": "datetime",
+          "label": "Ends",
+          "placeholder": "Never",
+          "rules": ["nullable", "date", "after:starts_at"]
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 4 } },
+          "key": "priority",
+          "type": "number",
+          "label": "Priority",
+          "placeholder": "0",
+          "default": 0,
+          "hint": "Only matters when two pattern rules could both match. Higher runs first.",
+          "rules": ["nullable", "integer", "min:-1000", "max:1000"]
+        }
+      ]
+    }
+  ],
+  "sidebar": {
+    "elements": [
+      {
+        "ui": { "type": "row", "dense": true },
+        "elements": [
+          {
+            "ui": { "type": "field" },
+            "key": "code",
+            "type": "select",
+            "label": "Redirect type",
+            "placeholder": "Select type",
+            "default": 301,
+            "hint": "301 tells search engines the move is permanent and passes ranking to the new URL. Use 307 or 308 if a form or webhook posts to this path — 301 and 302 turn a POST into a GET and drop the data.",
+            "options": {
+              "items": [
+                { "title": "301 Permanent", "value": 301 },
+                { "title": "302 Temporary", "value": 302 },
+                { "title": "307 Temporary, same method", "value": 307 },
+                { "title": "308 Permanent, same method", "value": 308 }
+              ]
+            },
+            "rules": ["required", "in:301,302,307,308"]
+          },
+          {
+            "ui": { "type": "field" },
+            "key": "status",
+            "type": "select",
+            "label": "Status",
+            "placeholder": "Select status",
+            "default": "active",
+            "options": {
+              "items": [
+                { "title": "Active", "value": "active" },
+                { "title": "Inactive", "value": "inactive" }
+              ]
+            },
+            "rules": ["required", "in:active,inactive"]
+          }
+        ]
+      }
+    ],
+    "footer": {
+      "elements": [
+        {
+          "ui": { "type": "row", "dense": true },
+          "elements": [
+            {
+              "ui": { "type": "button", "color": "primary", "icon": "tabler-checkbox" },
+              "action": "save",
+              "label": "Save Changes",
+              "redirect": false
+            },
+            {
+              "ui": { "type": "button", "color": "secondary", "variant": "tonal", "icon": "tabler-arrow-left" },
+              "action": "cancel",
+              "label": "Cancel",
+              "redirect": "/module/redirect-rules"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

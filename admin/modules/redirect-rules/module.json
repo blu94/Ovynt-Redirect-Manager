@@ -1,0 +1,14 @@
+{
+  "name": "Redirects",
+  "type": "redirect-rules",
+  "resource": "redirect_manager",
+  "routeBase": "module/redirect-rules",
+  "order": 11,
+  "icon": "tabler-route",
+  "api": "/admin/modules/redirect-rules",
+  "table": { "$ref": "index.json" },
+  "form": { "$ref": "form.json" },
+  "overview": { "$ref": "overview.json" },
+  "settings": { "$ref": "settings.json" },
+  "transfer": { "$ref": "transfer.json" }
+}

@@ -1,0 +1,103 @@
+{
+  "elements": [
+    {
+      "ui": { "type": "section", "cols": 12, "icon": "tabler-link-off" },
+      "name": "The problem",
+      "subtitle": "Recorded when a visitor asked for this path and the shop had nothing to serve.",
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 8 }, "icon": "tabler-link", "color": "warning" },
+          "type": "display",
+          "key": "path",
+          "label": "Path"
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 4 }, "icon": "tabler-alert-triangle", "color": "error" },
+          "type": "display",
+          "key": "kind",
+          "label": "Problem"
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 4 }, "icon": "tabler-activity", "color": "primary" },
+          "type": "display",
+          "key": "hits",
+          "label": "Times asked for"
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 4 }, "icon": "tabler-clock", "color": "info" },
+          "type": "display",
+          "key": "last_seen_at",
+          "label": "Last seen"
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 4 }, "icon": "tabler-flag", "color": "secondary" },
+          "type": "display",
+          "key": "state",
+          "label": "State"
+        },
+        {
+          "ui": { "type": "field", "cols": 12, "icon": "tabler-external-link" },
+          "type": "display",
+          "key": "referrer",
+          "label": "Linked from"
+        }
+      ]
+    },
+    {
+      "ui": { "type": "section", "cols": 12, "icon": "tabler-wand" },
+      "name": "Where it probably belongs",
+      "subtitle": "The closest live paths on the site, scored by how similar they are. Nothing here changes anything until you create a rule.",
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": 12 },
+          "type": "display",
+          "key": "suggestions_text",
+          "label": "Suggestions"
+        }
+      ]
+    }
+  ],
+  "sidebar": {
+    "elements": [],
+    "footer": {
+      "elements": [
+        {
+          "ui": { "type": "row", "dense": true },
+          "elements": [
+            {
+              "ui": {
+                "type": "button",
+                "color": "primary",
+                "icon": "tabler-wand",
+                "show_if": "top_suggestion,exists"
+              },
+              "action": "navigate",
+              "label": "Redirect to the best match",
+              "to": "/module/redirect-rules/create?from_path={path}&to_path={top_suggestion}"
+            },
+            {
+              "ui": { "type": "button", "color": "info", "variant": "tonal", "icon": "tabler-arrow-forward" },
+              "action": "navigate",
+              "label": "Redirect somewhere else",
+              "to": "/module/redirect-rules/create?from_path={path}"
+            },
+            {
+              "ui": { "type": "button", "color": "success", "variant": "tonal", "icon": "tabler-check" },
+              "action": "request",
+              "method": "POST",
+              "api": "/admin/modules/redirect-issues/page/resolve",
+              "fields": ["id"],
+              "label": "Dealt with"
+            },
+            {
+              "ui": { "type": "button", "color": "secondary", "variant": "tonal", "icon": "tabler-arrow-left" },
+              "action": "cancel",
+              "label": "Back",
+              "redirect": "/module/redirect-issues"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "ui": { "type": "section", "icon": "tabler-settings", "class": "pa-5" },
+  "name": "Redirect settings",
+  "subtitle": "How broken links are recorded, and what the plugin offers when it finds one.",
+  "elements": [
+    {
+      "ui": { "type": "row", "dense": false },
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 6 } },
+          "key": "log_404",
+          "type": "switch",
+          "label": "Record paths that lead nowhere",
+          "default": true,
+          "hint": "Switch off once a migration is finished and you no longer want the evidence. Redirects keep working either way."
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 6 } },
+          "key": "suggest_enabled",
+          "type": "switch",
+          "label": "Suggest destinations",
+          "default": true,
+          "hint": "Look through live pages, products, posts and collections for a path close to the broken one."
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 6 } },
+          "key": "suggest_threshold",
+          "type": "number",
+          "label": "How close a suggestion must be (%)",
+          "placeholder": "70",
+          "default": 70,
+          "hint": "Below about 60 the suggestions stop being useful and start being noise you have to read and reject.",
+          "rules": ["required", "integer", "min:0", "max:100"]
+        },
+        {
+          "ui": { "type": "field", "cols": { "cols": 12, "md": 6 } },
+          "key": "retention_days",
+          "type": "number",
+          "label": "Remove dealt-with entries after (days)",
+          "placeholder": "Leave empty to keep everything",
+          "hint": "Used by Prune history on the Broken Links screen. Nothing is ever removed automatically, and open entries are never removed at all.",
+          "rules": ["nullable", "integer", "min:1"]
+        },
+        {
+          "ui": { "type": "field", "cols": 12 },
+          "key": "storefront_suggestions",
+          "type": "switch",
+          "label": "Show suggestions to visitors on the 404 page",
+          "default": false,
+          "hint": "Requires the active theme to include the plugin's not-found slot. A theme that does not renders nothing at all — see the plugin's README."
+        }
+      ]
+    },
+    {
+      "ui": { "type": "row", "dense": false },
+      "elements": [
+        {
+          "ui": { "type": "field", "cols": 12 },
+          "key": "ignore_patterns",
+          "type": "repeater",
+          "label": "Never record these paths",
+          "hint": "Wildcards, one per row: wp-admin/*, *.php, .env. Without these the list fills with vulnerability scanners probing for software you do not run, and the real broken links are buried.",
+          "elements": [
+            {
+              "ui": { "type": "field", "cols": 12 },
+              "key": "pattern",
+              "type": "text",
+              "label": "Path pattern",
+              "placeholder": "wp-admin/*"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ui": { "type": "row", "dense": true },
+      "elements": [
+        {
+          "ui": { "type": "button", "color": "primary", "icon": "tabler-checkbox" },
+          "action": "save",
+          "label": "Save Settings"
+        }
+      ]
+    }
+  ]
+}

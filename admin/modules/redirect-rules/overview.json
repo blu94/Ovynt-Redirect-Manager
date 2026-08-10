@@ -1,0 +1,103 @@
+[
+  {
+    "ui": { "type": "section", "icon": "tabler-route", "cols": 12 },
+    "name": "Where the site stands",
+    "subtitle": "A rule that has never been hit is either a URL nobody uses or one nobody can reach — both are worth a look.",
+    "elements": [
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-route", "color": "primary" },
+        "type": "display",
+        "key": "rules_active",
+        "label": "Active rules"
+      },
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-arrow-forward", "color": "success" },
+        "type": "display",
+        "key": "redirects_served",
+        "label": "Redirects served"
+      },
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-link-off", "color": "warning" },
+        "type": "display",
+        "key": "issues_open",
+        "label": "Open problems"
+      },
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-zzz", "color": "secondary" },
+        "type": "display",
+        "key": "rules_unused",
+        "label": "Rules never used"
+      },
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-rotate-clockwise", "color": "error" },
+        "type": "display",
+        "key": "issues_loops",
+        "label": "Loops"
+      },
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-arrows-right", "color": "warning" },
+        "type": "display",
+        "key": "issues_chains",
+        "label": "Chains"
+      },
+      {
+        "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 3 }, "icon": "tabler-list", "color": "info" },
+        "type": "display",
+        "key": "rules_total",
+        "label": "Rules in total"
+      }
+    ]
+  },
+  {
+    "ui": { "type": "section", "class": "h-100", "icon": "tabler-chart-donut", "cols": { "cols": 12, "md": 5 } },
+    "name": "Rules by kind",
+    "subtitle": "Exact rules cost a visitor one indexed lookup. Prefix and pattern rules are checked as a set, only when no exact rule matched.",
+    "elements": [
+      {
+        "ui": { "type": "field", "cols": 12 },
+        "type": "chart",
+        "chart": "donut",
+        "label": "Rules",
+        "key": "match_type_distribution",
+        "unit": "rule",
+        "total": "Rules",
+        "height": 320,
+        "empty": "No rules yet."
+      }
+    ]
+  },
+  {
+    "ui": { "type": "section", "class": "h-100", "icon": "tabler-chart-bar", "cols": { "cols": 12, "md": 7 } },
+    "name": "Dead paths still getting traffic",
+    "subtitle": "The ten unresolved paths asked for most often. These are the redirects worth writing first.",
+    "elements": [
+      {
+        "ui": { "type": "field", "cols": 12 },
+        "type": "chart",
+        "chart": "bar",
+        "label": "Hits",
+        "key": "top_broken",
+        "unit": "hit",
+        "horizontal": true,
+        "height": 320,
+        "empty": "Nothing is broken. That is the goal."
+      }
+    ]
+  },
+  {
+    "ui": { "type": "section", "icon": "tabler-chart-line", "cols": 12 },
+    "name": "The last twelve months",
+    "subtitle": "New dead paths falling away while redirects keep being served is what a finished migration looks like.",
+    "elements": [
+      {
+        "ui": { "type": "field", "cols": 12 },
+        "type": "chart",
+        "chart": "line",
+        "label": "Activity",
+        "key": "traffic",
+        "height": 320,
+        "empty": "No activity recorded yet."
+      }
+    ]
+  }
+]

@@ -1,0 +1,110 @@
+{
+  "expandable": false,
+  "sortBy": [{ "key": "hits", "order": "desc" }],
+  "headerActions": {
+    "elements": [
+      {
+        "key": "reload",
+        "ui": { "type": "button", "icon": "tabler-refresh", "color": "success", "rounded": true },
+        "tooltip": "Refresh List",
+        "action": "reload",
+        "class": "ms-2"
+      },
+      {
+        "key": "prune",
+        "ui": { "type": "button", "icon": "tabler-eraser", "color": "secondary", "variant": "tonal", "rounded": "md" },
+        "label": "Prune history",
+        "tooltip": "Remove entries that were dealt with longer ago than the retention period",
+        "action": "request",
+        "method": "POST",
+        "api": "/admin/modules/redirect-issues/page/prune",
+        "params": {
+          "confirm": true,
+          "confirmText": "Remove resolved entries older than the retention period set in Settings? Open entries are never removed."
+        }
+      }
+    ]
+  },
+  "filters": {
+    "elements": [
+      {
+        "ui": { "type": "field" },
+        "key": "resolved",
+        "label": "State",
+        "placeholder": "Select State",
+        "type": "select",
+        "default": "0",
+        "options": {
+          "items": [
+            { "title": "Still open", "value": "0" },
+            { "title": "Dealt with", "value": "1" }
+          ]
+        }
+      },
+      {
+        "ui": { "type": "field" },
+        "key": "type",
+        "label": "Problem",
+        "placeholder": "Select Problem",
+        "type": "select",
+        "options": {
+          "items": [
+            { "title": "Not found", "value": "NOT_FOUND" },
+            { "title": "Redirect loop", "value": "REDIRECT_LOOP" },
+            { "title": "Redirect chain", "value": "REDIRECT_CHAIN" }
+          ]
+        }
+      }
+    ]
+  },
+  "elements": [
+    { "ui": { "type": "display" }, "label": "ID", "key": "id", "sortable": true, "width": "60px" },
+    { "ui": { "type": "display" }, "label": "Path", "key": "path", "sortable": true, "searchable": true, "ellipsis": true },
+    { "ui": { "type": "display" }, "label": "Problem", "key": "kind", "sortable": false, "align": "center", "width": "120px", "type": "chip" },
+    { "ui": { "type": "display" }, "label": "Referrer", "key": "referrer", "sortable": false, "ellipsis": true },
+    { "ui": { "type": "display" }, "label": "Hits", "key": "hits", "sortable": true, "align": "center", "width": "90px" },
+    { "ui": { "type": "display" }, "label": "Last Seen", "key": "last_seen_at", "sortable": true, "align": "center", "type": "datetime" },
+    {
+      "ui": { "type": "display" },
+      "label": "State",
+      "key": "state",
+      "sortable": false,
+      "align": "center",
+      "type": "status",
+      "colors": { "resolved": "success", "open": "warning" }
+    }
+  ],
+  "actions": {
+    "elements": [
+      "view",
+      {
+        "key": "create-redirect",
+        "ui": { "type": "button", "icon": "tabler-arrow-forward", "color": "info", "rounded": true },
+        "label": "Redirect",
+        "tooltip": "Create a redirect for this path",
+        "action": "navigate",
+        "to": "/module/redirect-rules/create?from_path={path}"
+      },
+      {
+        "key": "resolve",
+        "ui": { "type": "button", "icon": "tabler-check", "color": "success", "rounded": true },
+        "label": "Dealt with",
+        "tooltip": "Take this off the open list without creating a redirect",
+        "action": "request",
+        "method": "POST",
+        "api": "/admin/modules/redirect-issues/page/resolve",
+        "fields": ["id"]
+      },
+      {
+        "key": "delete",
+        "action": "delete",
+        "ui": { "type": "button", "icon": "tabler-trash", "color": "error", "rounded": true },
+        "params": {
+          "confirm": true,
+          "confirmText": "Delete this entry? If the path is hit again it will simply be recorded afresh."
+        }
+      }
+    ],
+    "class": "fit"
+  }
+}
