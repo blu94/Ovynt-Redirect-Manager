@@ -161,9 +161,15 @@ class RedirectMatcher
      */
     private function match(string $path, string $queryString): ?array
     {
-        if ($path === '') {
-            return null;
-        }
+        // **An empty path is matchable, not skipped.** It is the site root, and a rule for it is
+        // the WordPress case this package advertises query matching for: `/?p=123` is an old
+        // permalink for a post, and its path normalises to nothing at all.
+        //
+        // The guard that used to sit here returned null before any rule was consulted, so no
+        // root rule could ever fire whatever its query said. It was never load-bearing — the
+        // root is protected upstream instead, where core asks about `/` only when the request
+        // carries a query string, so a bare `/` never reaches a rule and the home page cannot be
+        // redirected away from by a pattern that happens to match nothing.
 
         $exact = $this->pickExact($path, $queryString);
 

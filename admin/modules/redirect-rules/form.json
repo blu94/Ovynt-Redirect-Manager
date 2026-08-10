@@ -28,8 +28,8 @@
           "type": "text",
           "label": "From path",
           "placeholder": "old-page, or blog for everything under it",
-          "hint": "The path only, without the domain. Leading and trailing slashes are ignored. For a pattern, write it without slashes around it — blog/(\\d+)/(.+)",
-          "rules": ["required", "string", "max:255"]
+          "hint": "The path only, without the domain. Leading and trailing slashes are ignored. For a pattern, write it without slashes around it — blog/(\\d+)/(.+). Leave it empty to match your site's front page, which is what an old WordPress link like /?p=123 needs — fill in the query below as well.",
+          "rules": ["nullable", "string", "max:255"]
         },
         {
           "ui": { "type": "field", "cols": { "cols": 12, "md": 4 } },

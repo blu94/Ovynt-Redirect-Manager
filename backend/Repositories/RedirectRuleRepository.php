@@ -149,6 +149,22 @@ class RedirectRuleRepository
     {
         $matchType = $data['match_type'] ?? $existing?->match_type ?? RedirectRule::MATCH_EXACT;
         $from      = (string) ($data['from_path'] ?? $existing?->from_path ?? '');
+        $query     = (string) ($data['query_match'] ?? $existing?->query_match ?? '');
+
+        // An empty path is allowed — it is the site's front page, which is what an old
+        // WordPress permalink like `/?p=123` needs. An empty path *and* an empty query is not:
+        // that rule says "match the front page however it is asked for" and would send every
+        // visitor arriving at the home page somewhere else.
+        //
+        // The form cannot express this — no validation rule can require one field only when
+        // another is blank — which is why it is checked here rather than in `form.json`.
+        if (trim($from) === '' && trim($query) === '') {
+            throw new RuntimeException(
+                'A rule needs something to match on. Give it a path, or leave the path empty and '
+                . 'name a query — for example a query of "p=123" to catch an old /?p=123 link. '
+                . 'A rule with neither would redirect your home page.'
+            );
+        }
 
         if ($matchType === RedirectRule::MATCH_REGEX
             && @preg_match('#' . str_replace('#', '\#', $from) . '#u', '') === false) {

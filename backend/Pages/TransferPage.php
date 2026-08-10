@@ -289,8 +289,16 @@ class TransferPage
      */
     private function validate(array $values): ?string
     {
-        if ($values['from_path'] === '' || $values['to_path'] === '') {
-            return 'a rule needs both a from and a to.';
+        if ($values['to_path'] === '') {
+            return 'a rule needs somewhere to send the visitor.';
+        }
+
+        // An empty path is allowed when a query is named — that pair is the site's front page
+        // asked for a particular way, which is what an exported WordPress permalink such as
+        // `/?p=123` becomes. Empty on both is refused for the same reason the form is: it would
+        // match the home page however it was reached.
+        if ($values['from_path'] === '' && $values['query_match'] === '') {
+            return 'a rule needs a path, or a query to match on when the path is your front page.';
         }
 
         if (! in_array($values['match_type'], RedirectRule::MATCH_TYPES, true)) {

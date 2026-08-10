@@ -49,10 +49,21 @@ class RedirectSetting extends Model
      * `firstOrCreate` rather than a seeder: the row has to exist the first time anything reads
      * it, and a plugin's migrations run on enable while its first 404 could arrive a
      * millisecond later.
+     *
+     * **`refresh()` is load-bearing, not tidiness.** Every default here lives on the column, and
+     * `firstOrCreate(['id' => 1])` inserts that one attribute and hands back a model carrying
+     * only what it was given — Laravel does not re-read the row, so the defaults the database
+     * just applied are absent from the instance. The caller that creates the row therefore sees
+     * `null` for the threshold, the log switch and everything else.
+     *
+     * That caller is whoever hits the first missing page after the plugin is enabled: the
+     * suggester takes `int $threshold`, gets null, throws a `TypeError`, and the listener's own
+     * catch turns it into a log line and no redirect. Silent, once, on a fresh install — the
+     * hardest shape of bug to be told about. Re-reading costs one query, on one request, ever.
      */
     public static function current(): self
     {
-        return self::$cached ??= self::query()->firstOrCreate(['id' => 1]);
+        return self::$cached ??= self::query()->firstOrCreate(['id' => 1])->refresh();
     }
 
     /** Drop the memo. Called after a save so the next read sees what was just written. */

@@ -24,6 +24,17 @@ Every rule can additionally require a **query string** — `p=123`, which is wha
 site needs when its old links are `/?p=123` rather than a readable slug. The requirement is a
 subset test, so a rule for `p=123` still matches `?p=123&utm_source=newsletter`.
 
+**Leave the path empty to match your front page.** `/?p=123` has no path at all once the
+leading slash is stripped, so the rule that catches it is an empty `From path` plus a query of
+`p=123`. A rule with neither is refused: it would match the home page however it was reached
+and send every visitor away from it.
+
+> This needs a build of Ovynt whose `ThemeController` dispatches `PathNotResolved` for the root
+> when the request carries a query string. `/` always resolves to the home page, so nothing used
+> to ask whether the address had moved and a root rule could never fire however it was written.
+> On an older build the rule saves and simply never matches. A bare `/` is still never offered
+> to a rule, which is what keeps the home page safe.
+
 Rules carry a **priority** (which wins when two patterns overlap) and an optional **window**
 (`starts_at` / `ends_at`, for a campaign URL that should stop on its own).
 

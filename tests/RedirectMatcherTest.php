@@ -183,4 +183,29 @@ class RedirectMatcherTest extends TestCase
 
         $this->assertSame('https://example.com/elsewhere', $this->resolve('old-page')->target);
     }
+    /**
+     * The site root is a matchable path, and this is the case the package advertises query
+     * matching for: `/?p=123` is an old WordPress permalink for a post, not the front page.
+     *
+     * Its path normalises to nothing at all, so a rule for it has an empty `from_path` — which
+     * a guard in `match()` used to reject before any rule was consulted. Nothing about the
+     * query logic was wrong; the request simply never got that far.
+     *
+     * The bare front page is protected upstream instead: core asks about `/` only when the
+     * request carries a query string, so a rule like this cannot swallow `/`.
+     */
+    #[Test]
+    public function a_rule_on_the_site_root_fires_for_its_own_query(): void
+    {
+        $this->rule(['from_path' => '', 'query_match' => 'p=123', 'to_path' => 'hello-world']);
+
+        $match = $this->resolve('', 'p=123');
+
+        $this->assertTrue($match->hasTarget(), 'A root rule must match its own query.');
+        $this->assertSame(url('/hello-world'), $match->target);
+
+        // A different query is a different old post, and the bare root is the front page.
+        $this->assertFalse($this->resolve('', 'p=999')->hasTarget());
+        $this->assertFalse($this->resolve('')->hasTarget());
+    }
 }
