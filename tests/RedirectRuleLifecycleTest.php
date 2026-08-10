@@ -8,7 +8,6 @@ use Plugin\RedirectManager\Backend\Models\RedirectIssue;
 use Plugin\RedirectManager\Backend\Models\RedirectRule;
 use Plugin\RedirectManager\Backend\Repositories\RedirectRuleRepository;
 use RuntimeException;
-use Tests\TestCase;
 
 require_once __DIR__ . '/autoload.php';
 

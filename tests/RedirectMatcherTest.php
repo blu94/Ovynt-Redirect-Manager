@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use PHPUnit\Framework\Attributes\Test;
 use Plugin\RedirectManager\Backend\Models\RedirectRule;
 use Plugin\RedirectManager\Backend\Services\RedirectMatcher;
-use Tests\TestCase;
 
 require_once __DIR__ . '/autoload.php';
 
