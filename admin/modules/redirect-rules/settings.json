@@ -61,7 +61,7 @@
           "key": "ignore_patterns",
           "type": "repeater",
           "label": "Addresses never worth recording",
-          "hint": "One pattern per row. Use * to stand for anything: wp-admin/* catches everything under wp-admin, *.php catches every address ending in .php, and .env catches exactly that. Without a few of these, Broken Links fills up with automated scanners probing for software you do not run, and the handful of real broken links your visitors actually hit gets buried. Matching ignores upper and lower case.",
+          "hint": "One pattern per row. Use * to stand for anything: .git/* catches everything under .git, *.sql catches every address ending in .sql, and .env catches exactly that. Without a few of these, Broken Links fills up with automated scanners probing for files and software your site does not serve, and the handful of real broken links your visitors actually hit gets buried. Matching ignores upper and lower case.",
           "columns": [{ "label": "ADDRESS PATTERN", "key": "pattern" }],
           "elements": [
             {
