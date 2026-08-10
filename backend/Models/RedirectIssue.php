@@ -103,6 +103,19 @@ class RedirectIssue extends Model
      */
     public function rule(): ?RedirectRule
     {
-        return RedirectRule::where('from_path', $this->path)->first();
+        // Narrowed to an **active exact** rule, because the question this answers is "is this
+        // broken path already fixed?" and only those two conditions make the answer yes.
+        //
+        // An unfiltered `where('from_path', ...)` matched three things it should not. A
+        // prefix rule sharing the path covers everything *under* it, not the path itself. A
+        // disabled rule fires for nobody. And a regex rule's `from_path` is stored verbatim
+        // rather than normalised, so matching it against a normalised path is a coincidence
+        // when it happens at all. Each one showed the operator a broken link as already
+        // handled, which is the one wrong answer this screen must not give.
+        return RedirectRule::query()
+            ->where('match_type', RedirectRule::MATCH_EXACT)
+            ->where('status', RedirectRule::STATUS_ACTIVE)
+            ->where('from_path', RedirectRule::normalisePath($this->path))
+            ->first();
     }
 }

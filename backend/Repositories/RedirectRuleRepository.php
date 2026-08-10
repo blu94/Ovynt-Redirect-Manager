@@ -47,11 +47,54 @@ class RedirectRuleRepository
     {
         $this->guard($data);
 
-        $rule = RedirectRule::create($data);
+        // A rule the operator is typing again is one they are asking for back, so a
+        // soft-deleted row with the same identity is revived rather than collided with.
+        //
+        // `TransferPage` already does exactly this on import, for exactly this reason. Until
+        // both did, the create form was a dead end: the unique index covers trashed rows, so
+        // the save failed, and the message told the operator to "restore or permanently
+        // remove" the old rule using an action the rules screen does not have. The only way
+        // out was to export a CSV and import it back.
+        //
+        // Reviving keeps the rule's `hits` and `last_hit_at`, which is the honest reading —
+        // it is the same rule for the same path, and its history did not stop being true.
+        $rule = $this->reviveTrashed($data) ?? RedirectRule::create($data);
 
         $this->afterWrite($rule);
 
         return $rule;
+    }
+
+    /**
+     * Bring back a soft-deleted rule with the identity being created, or null.
+     *
+     * Matched on the three columns the unique index covers, normalised the same way the model
+     * normalises them on save — otherwise a path typed as "/old-page/" would miss the trashed
+     * row stored as "old-page" and fall through to an insert the database then refuses.
+     *
+     * @param  array<string,mixed>  $data
+     */
+    private function reviveTrashed(array $data): ?RedirectRule
+    {
+        $matchType = $data['match_type'] ?? RedirectRule::MATCH_EXACT;
+        $from      = (string) ($data['from_path'] ?? '');
+
+        $trashed = RedirectRule::onlyTrashed()
+            ->where('match_type', $matchType)
+            ->where('from_path', $matchType === RedirectRule::MATCH_REGEX
+                ? $from
+                : RedirectRule::normalisePath($from))
+            ->where('query_match', ltrim(trim((string) ($data['query_match'] ?? '')), '?'))
+            ->first();
+
+        if ($trashed === null) {
+            return null;
+        }
+
+        $trashed->deleted_at = null;
+        $trashed->fill($data)->save();
+
+        return $trashed;
     }
 
     public function find($id)
@@ -147,6 +190,10 @@ class RedirectRuleRepository
             ->where('from_path', $normalised)
             ->where('query_match', $query)
             ->when($existing !== null, fn ($q) => $q->whereKeyNot($existing->getKey()))
+            // On create a trashed row is not a clash — `create()` revives it. Only an edit
+            // colliding with a deleted rule still needs telling, because reviving there would
+            // silently merge two rules the operator is holding apart.
+            ->when($existing === null, fn ($q) => $q->whereNull('deleted_at'))
             ->first();
 
         if ($clash === null) {
@@ -154,9 +201,9 @@ class RedirectRuleRepository
         }
 
         throw new RuntimeException($clash->trashed()
-            ? 'A deleted rule for that path still exists. Restore or permanently remove it before '
-                . 'creating a new one, or import the replacement from the Import & Export screen — '
-                . 'importing revives a deleted rule rather than colliding with it.'
+            ? 'A deleted rule for that path still exists, so this edit would collide with it. '
+                . 'Create the rule again from the Rules screen instead — that revives the deleted '
+                . 'one — or import the replacement from Import & Export.'
             : "There is already a rule for that path (#{$clash->id}), sending it to "
                 . "\"{$clash->to_path}\". Edit that one instead."
         );
