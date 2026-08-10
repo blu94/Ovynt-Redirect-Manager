@@ -62,7 +62,7 @@ class RedirectRuleRepository
 
         $this->afterWrite($rule);
 
-        return $rule;
+        return $this->present($rule);
     }
 
     /**
@@ -97,9 +97,26 @@ class RedirectRuleRepository
         return $trashed;
     }
 
+    /**
+     * One rule, with the home page shown as a destination rather than as a blank.
+     *
+     * A destination is stored normalised, so `/` is trimmed to an empty string — and empty is
+     * exactly what the matcher wants: `toUrl('')` builds `url('/')`, the front page. Correct on
+     * the way out, and unreadable on the way back in. The operator saved `/`, reopened the rule
+     * and found **To path** empty, and could not save again because the field is `required` —
+     * so a working home-page redirect became one nobody could edit the dates or status of.
+     *
+     * Presented here rather than as a `getToPathAttribute()` accessor, because the matcher
+     * reads the column directly (`resolvedTo()` → `$this->to_path`). An accessor returning `/`
+     * would reach it too, and `toUrl('/')` builds `url('//')` — a broken destination on every
+     * home-page rule. The read boundary is the only place this is safe.
+     *
+     * Nothing is written: `normaliseTarget('/')` trims it straight back to `''` on save, so the
+     * column keeps one representation and the round-trip is closed.
+     */
     public function find($id)
     {
-        return RedirectRule::find($id);
+        return $this->present(RedirectRule::find($id));
     }
 
     public function update($id, array $data)
@@ -111,6 +128,24 @@ class RedirectRuleRepository
         $rule->update($data);
 
         $this->afterWrite($rule);
+
+        return $this->present($rule);
+    }
+
+    /**
+     * Show the home page as `/` rather than as nothing.
+     *
+     * **Every hand-back, not just the load.** Fixing only `find()` left the bug half alive: the
+     * form loaded correctly, then the save returned the freshly-written record — empty
+     * destination and all — and the field went blank again the moment it succeeded. The form
+     * binds to whatever the write returns, so a read-side fix that skips the write path is a
+     * fix the operator watches undo itself.
+     */
+    private function present(?RedirectRule $rule): ?RedirectRule
+    {
+        if ($rule !== null && (string) $rule->to_path === '') {
+            $rule->setAttribute('to_path', '/');
+        }
 
         return $rule;
     }

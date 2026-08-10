@@ -86,7 +86,15 @@ class TransferPage
                     $rule->match_type,
                     $rule->from_path,
                     $rule->query_match,
-                    $rule->to_path,
+                    // The home page is stored as an empty destination, and `validate()` refuses
+                    // an empty `to` — so exporting it verbatim produced a file whose own import
+                    // silently skipped that row. Written as `/`, which normalises straight back
+                    // to empty on the way in.
+                    // The home page is stored as an empty destination, and `validate()` refuses
+                    // an empty `to` — so exporting it verbatim produced a file whose own import
+                    // silently skipped that row. Written as `/`, which normalises straight back
+                    // to empty on the way in.
+                    (string) $rule->to_path === '' ? '/' : $rule->to_path,
                     $rule->code,
                     $rule->priority,
                     $rule->status,
