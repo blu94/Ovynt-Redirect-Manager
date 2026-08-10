@@ -32,8 +32,9 @@ and send every visitor away from it.
 > This needs a build of Ovynt whose `ThemeController` dispatches `PathNotResolved` for the root
 > when the request carries a query string. `/` always resolves to the home page, so nothing used
 > to ask whether the address had moved and a root rule could never fire however it was written.
-> On an older build the rule saves and simply never matches. A bare `/` is still never offered
-> to a rule, which is what keeps the home page safe.
+> That build is **1.3.0**, and the manifest requires it — on anything older the package is
+> refused at install rather than allowed to save a rule that would silently never match. A bare
+> `/` is still never offered to a rule, which is what keeps the home page safe.
 
 Rules carry a **priority** (which wins when two patterns overlap) and an optional **window**
 (`starts_at` / `ends_at`, for a campaign URL that should stop on its own).

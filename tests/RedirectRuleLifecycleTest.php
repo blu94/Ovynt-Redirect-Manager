@@ -10,6 +10,8 @@ use Plugin\RedirectManager\Backend\Repositories\RedirectRuleRepository;
 use RuntimeException;
 use Tests\TestCase;
 
+require_once __DIR__ . '/autoload.php';
+
 /**
  * Creating, re-creating and matching rules — the operator-facing edges.
  *

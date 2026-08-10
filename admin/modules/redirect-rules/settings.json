@@ -62,6 +62,7 @@
           "type": "repeater",
           "label": "Addresses never worth recording",
           "hint": "One pattern per row. Use * to stand for anything: wp-admin/* catches everything under wp-admin, *.php catches every address ending in .php, and .env catches exactly that. Without a few of these, Broken Links fills up with automated scanners probing for software you do not run, and the handful of real broken links your visitors actually hit gets buried. Matching ignores upper and lower case.",
+          "columns": [{ "label": "ADDRESS PATTERN", "key": "pattern" }],
           "elements": [
             {
               "ui": { "type": "field", "cols": 12 },

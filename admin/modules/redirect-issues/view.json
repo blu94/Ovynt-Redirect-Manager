@@ -25,7 +25,7 @@
         },
         {
           "ui": { "type": "field", "cols": { "cols": 12, "sm": 6, "md": 4 }, "icon": "tabler-clock", "color": "info" },
-          "type": "display",
+          "type": "datetime",
           "key": "last_seen_at",
           "label": "Last seen"
         },
@@ -58,46 +58,47 @@
     }
   ],
   "sidebar": {
-    "elements": [],
-    "footer": {
-      "elements": [
-        {
-          "ui": { "type": "row", "dense": true },
-          "elements": [
-            {
-              "ui": {
-                "type": "button",
-                "color": "primary",
-                "icon": "tabler-wand",
-                "show_if": "top_suggestion,exists"
-              },
-              "action": "navigate",
-              "label": "Redirect to the best match",
-              "to": "/module/redirect-rules/create?from_path={path}&to_path={top_suggestion}"
+    "elements": [
+      {
+        "ui": { "type": "row", "dense": true },
+        "elements": [
+          {
+            "key": "best-match",
+            "ui": {
+              "type": "button",
+              "color": "primary",
+              "icon": "tabler-wand",
+              "show_if": "top_suggestion,exists"
             },
-            {
-              "ui": { "type": "button", "color": "info", "variant": "tonal", "icon": "tabler-arrow-forward" },
-              "action": "navigate",
-              "label": "Redirect somewhere else",
-              "to": "/module/redirect-rules/create?from_path={path}"
-            },
-            {
-              "ui": { "type": "button", "color": "success", "variant": "tonal", "icon": "tabler-check" },
-              "action": "request",
-              "method": "POST",
-              "api": "/admin/modules/redirect-issues/page/resolve",
-              "fields": ["id"],
-              "label": "Dealt with"
-            },
-            {
-              "ui": { "type": "button", "color": "secondary", "variant": "tonal", "icon": "tabler-arrow-left" },
-              "action": "cancel",
-              "label": "Back",
-              "redirect": "/module/redirect-issues"
-            }
-          ]
-        }
-      ]
-    }
+            "action": "navigate",
+            "label": "Redirect to the best match",
+            "to": "/module/redirect-rules/create?from_path={path}&to_path={top_suggestion}"
+          },
+          {
+            "key": "redirect-elsewhere",
+            "ui": { "type": "button", "color": "info", "variant": "tonal", "icon": "tabler-arrow-forward" },
+            "action": "navigate",
+            "label": "Redirect somewhere else",
+            "to": "/module/redirect-rules/create?from_path={path}"
+          },
+          {
+            "key": "resolve",
+            "ui": { "type": "button", "color": "success", "variant": "tonal", "icon": "tabler-check" },
+            "action": "request",
+            "method": "POST",
+            "api": "/admin/modules/redirect-issues/page/resolve",
+            "fields": ["id"],
+            "label": "Dealt with"
+          },
+          {
+            "key": "back",
+            "ui": { "type": "button", "color": "secondary", "variant": "tonal", "icon": "tabler-arrow-left" },
+            "action": "cancel",
+            "label": "Back",
+            "redirect": "/module/redirect-issues"
+          }
+        ]
+      }
+    ]
   }
 }
