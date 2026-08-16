@@ -81,12 +81,18 @@ file can simply be pasted again rather than producing duplicates or a half-appli
 
 ## Requirements
 
-Ovynt **>= 1.2.0**, and specifically a build that dispatches **`App\Events\PathNotResolved`**.
+Ovynt **>= 1.3.0, < 2.0.0** — the constraint `plugin.json` declares, so an older build is
+refused at install rather than left to manage rules that would never fire.
 
-That event is the seam this plugin hangs on: Ovynt's storefront controller dispatches it after
-it has failed to resolve a page, and a listener answers with a destination. Without it the
-plugin installs, enables and manages rules perfectly well — and **serves no redirects**,
-because nothing ever asks it to.
+The seam this plugin hangs on is **`App\Events\PathNotResolved`**: Ovynt's storefront controller
+dispatches it after failing to resolve a page, and a listener answers with a destination. A build
+that does not dispatch it manages rules perfectly well and **serves no redirects**, because
+nothing ever asks it to.
+
+The floor is 1.3.0 rather than 1.2.0 because of the root. `/` always resolves to the home page,
+so an earlier build never asked whether that address had moved, and a rule with an empty **From
+path** could not fire however it was written. From 1.3.0 the controller asks about the root too —
+but only when the request carries a query string, which is what keeps a bare `/` safe.
 
 Storefront suggestions additionally need the active theme to call the slot:
 
